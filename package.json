@@ -1,0 +1,25 @@
+{
+  "name": "multi-terminal",
+  "version": "1.0.0",
+  "description": "Web-based multi-terminal manager with xterm.js and pty",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "node-pty": "^1.0.0",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.8.3",
+    "xterm": "^5.3.0",
+    "xterm-addon-fit": "^0.8.0",
+    "xterm-addon-web-links": "^0.9.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "nodemon": "^3.0.1"
+  }
+}

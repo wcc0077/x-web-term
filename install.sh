@@ -80,25 +80,29 @@ APP_DIR="/opt/multi-terminal"
 log "部署到 $APP_DIR"
 
 mkdir -p $APP_DIR
-cd $APP_DIR
 
 # 复制文件
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [ -f "$SCRIPT_DIR/server.js" ]; then
-    cp -r $SCRIPT_DIR/* $APP_DIR/
-    cp -r $SCRIPT_DIR/.* $APP_DIR/ 2>/dev/null || true
-else
-    # 如果没有本地文件，尝试从 GitHub 克隆
-    warn "未找到本地项目文件，尝试从 GitHub 克隆..."
-    if command -v git &> /dev/null; then
-        cd /
-        rm -rf $APP_DIR
-        git clone https://github.com/YOUR_USERNAME/multi-terminal.git $APP_DIR
-        cd $APP_DIR
+log "从 $SCRIPT_DIR 复制文件..."
+
+# 复制所有项目文件（排除 .git 目录）
+cd "$SCRIPT_DIR"
+if [ -f "server.js" ]; then
+    # 使用 rsync 或 cp 复制文件
+    if command -v rsync &> /dev/null; then
+        rsync -av --exclude='.git' --exclude='node_modules' . $APP_DIR/
     else
-        err "未找到 server.js，请确保脚本与项目文件一起上传，或安装 git"
-        exit 1
+        # 手动复制每个文件
+        for f in * .*; do
+            [ "$f" = "." ] || [ "$f" = ".." ] || [ "$f" = ".git" ] && continue
+            [ -f "$f" ] || [ -d "$f" ] || continue
+            cp -r "$f" $APP_DIR/ 2>/dev/null || true
+        done
     fi
+    cd $APP_DIR
+else
+    err "未找到 server.js，请确保 install.sh 在项目根目录运行"
+    exit 1
 fi
 
 # 检查是否有代码

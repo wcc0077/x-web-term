@@ -16,6 +16,8 @@ scp -r multi-terminal root@your-server:/root/
 ### 2. 执行一键部署脚本
 
 ```bash
+chmod +x install.sh  # 添加执行权限
+
 sudo ./install.sh
 ```
 

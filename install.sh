@@ -91,6 +91,7 @@ else
     # 如果没有本地文件，尝试从 GitHub 克隆
     warn "未找到本地项目文件，尝试从 GitHub 克隆..."
     if command -v git &> /dev/null; then
+        cd /
         rm -rf $APP_DIR
         git clone https://github.com/YOUR_USERNAME/multi-terminal.git $APP_DIR
         cd $APP_DIR

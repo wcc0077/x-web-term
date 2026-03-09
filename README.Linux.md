@@ -6,7 +6,7 @@
 
 ```bash
 # 方式一：使用 git clone
-git clone https://github.com/your-repo/multi-terminal.git
+git clone git@github.com:wcc0077/x-web-term.git
 cd multi-terminal
 
 # 方式二：使用 scp 上传

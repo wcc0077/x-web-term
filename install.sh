@@ -37,7 +37,11 @@ else
 fi
 
 log "更新软件包列表..."
-apt-get update -qq || yum check-update -q || true
+if [ "$PM" = "apt" ]; then
+    apt-get update -qq
+else
+    yum makecache -q || true
+fi
 
 # 安装系统依赖
 log "安装基础依赖..."
@@ -83,6 +87,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [ -f "$SCRIPT_DIR/server.js" ]; then
     cp -r $SCRIPT_DIR/* $APP_DIR/
     cp -r $SCRIPT_DIR/.* $APP_DIR/ 2>/dev/null || true
+else
+    # 如果没有本地文件，尝试从 GitHub 克隆
+    warn "未找到本地项目文件，尝试从 GitHub 克隆..."
+    if command -v git &> /dev/null; then
+        rm -rf $APP_DIR
+        git clone https://github.com/YOUR_USERNAME/multi-terminal.git $APP_DIR
+        cd $APP_DIR
+    else
+        err "未找到 server.js，请确保脚本与项目文件一起上传，或安装 git"
+        exit 1
+    fi
 fi
 
 # 检查是否有代码

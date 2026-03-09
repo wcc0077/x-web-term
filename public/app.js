@@ -172,7 +172,26 @@ function createTerminal(options = {}) {
 
   // 适应容器大小 - 使用 requestAnimationFrame 确保 DOM 已渲染
   requestAnimationFrame(() => {
-    setTimeout(() => fitAddon.fit(), 100);
+    setTimeout(() => {
+      fitAddon.fit();
+      // fit 后创建终端并更新服务器端的 PTY 大小
+      const terminal = state.terminals.get(`pending-${localId}`);
+      if (terminal) {
+        // 请求服务器创建 PTY
+        state.socket.emit('terminal:create', {
+          cols: xterm.cols,
+          rows: xterm.rows
+        });
+        // fit 后更新服务器端的 PTY 大小（如果已经创建）
+        if (terminal.termId) {
+          state.socket.emit('terminal:resize', {
+            termId: terminal.termId,
+            cols: xterm.cols,
+            rows: xterm.rows
+          });
+        }
+      }
+    }, 100);
   });
 
   // 存储终端信息（等待服务器返回 termId）
@@ -186,12 +205,6 @@ function createTerminal(options = {}) {
     attachTo: null // 如果要附加到现有 tmux 会话
   };
   state.terminals.set(`pending-${localId}`, terminalInfo);
-
-  // 请求服务器创建 PTY
-  state.socket.emit('terminal:create', {
-    cols: xterm.cols,
-    rows: xterm.rows
-  });
 
   // 激活此终端
   setActiveTerminal(localId);
@@ -522,6 +535,13 @@ function initSocket() {
       if (screenContent) {
         latestPending.xterm.write(screenContent);
       }
+
+      // 发送 resize 确保后端 PTY 尺寸正确
+      state.socket.emit('terminal:resize', {
+        termId,
+        cols: latestPending.xterm.cols,
+        rows: latestPending.xterm.rows
+      });
 
       // 启动定时保存
       startAutoSave();

@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multi Terminal</title>
+  <title>X web Term</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cmVjdCBmaWxsPSIjMGQxMTE3IiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjE4Ii8+CiAgPHJlY3QgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNTZhNmZmIiBzdHJva2Utd2lkdGg9IjQiIHg9IjE1IiB5PSIxNSIgd2lkdGg9IjcwIiBoZWlnaHQ9IjUwIiByeD0iNiIvPgogIDxwb2x5bGluZSBwb2ludHM9IjI1LDQ1IDM1LDU1IDI1LDY1IiBmaWxsPSJub25lIiBzdHJva2U9IiMzZmI5NTAiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPGxpbmUgeDE9IjQ1IiB5MT0iNjUiIHgyPSI1NSIgeTI9IjY1IiBzdHJva2U9IiMzZmI5NTAiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPg==">
   <link rel="stylesheet" href="/libs/xterm/css/xterm.css">
   <style>
     * {
@@ -12,11 +13,15 @@
       padding: 0;
     }
 
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #0d1117;
       color: #c9d1d9;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
@@ -198,10 +203,19 @@
     }
 
     .terminal-content {
-      flex: 1;
       padding: 8px;
+      flex: 1;
       overflow: hidden;
+      position: relative;
+      min-height: 0; /* flex 嵌套中必要，允许子项缩小 */
     }
+
+    /* termDiv 是 xterm 的直接容器，填充父容器 */
+    .terminal-content > div {
+      width: 100%;
+      height: 100%;
+    }
+
 
     /* 自定义滚动条样式（暗色主题） */
     .terminal-content .xterm-viewport::-webkit-scrollbar {
@@ -362,7 +376,7 @@
 <body>
   <!-- Header -->
   <div id="header">
-    <h1>Multi Terminal</h1>
+    <h1>X web Term</h1>
     <div id="status">
       <span class="status-dot"></span>
       <span id="status-text">已连接</span>
